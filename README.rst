@@ -22,7 +22,7 @@ data.
 Example
 =======
 
-.. code:: python
+::
 
     import esoreader
 
