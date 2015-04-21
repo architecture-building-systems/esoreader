@@ -99,16 +99,16 @@ def read(eso_file_path):
     This is probably the function you are looking for...
     """
     eso_file = open(eso_file_path, 'r')
-    dd = read_data_dictionary(eso_file)
+    dd = _read_data_dictionary(eso_file)
     dd.build_index()
-    data = read_data(dd, eso_file)
+    data = _read_data(dd, eso_file)
     return dd, data
 
 
-def read_data_dictionary(eso_file):
+def _read_data_dictionary(eso_file):
     """parses the head of the eso_file, returning the data dictionary.
     the file object eso_file is advanced to the position needed by
-    read_data.
+    _read_data.
     """
     version, timestamp = [s.strip() for s in eso_file.next().split(',')[-2:]]
     dd = DataDictionary(version, timestamp)
@@ -132,10 +132,10 @@ def read_data_dictionary(eso_file):
     return dd
 
 
-def read_data(dd, eso_file):
+def _read_data(dd, eso_file):
     '''parse the data from the .eso file returning,
     NOTE: eso_file should be the same file object that was passed to
-    read_data_dictionary(eso_file) to obtain dd.'''
+    _read_data_dictionary(eso_file) to obtain dd.'''
     data = {}  # id => [value]
     for id in dd.variables.keys():
         data[id] = []
@@ -144,7 +144,7 @@ def read_data(dd, eso_file):
             break
         fields = [f.strip() for f in line.split(',')]
         id = int(fields[0])
-        if not id in dd.ids:
+        if id not in dd.ids:
             # skip entries that are not output:variables
             continue
         data[id].append(float(fields[1]))
