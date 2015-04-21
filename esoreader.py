@@ -30,6 +30,15 @@ data.
 Example
 =======
 
+New interface:
+
+    import esoreader
+    PATH_TO_ESO = r'/Path/To/EnergyPlus/Output/eplusout.eso'
+    eso = esoreader.read_from_path(PATH_TO_ESO)
+    df = eso.to_frame('total heat loss energy')  #  pandas.DataFrame
+
+
+Old interface: (still works)
 ::
 
     import esoreader
@@ -46,14 +55,21 @@ Example
 def read(eso_file_path):
     """Read in an .eso file and return the data dictionary and a dictionary
     representing the data.
-    This is probably the function you are looking for...
+    NOTE: this function is here for backward compatibilty reasons. Use
+    read_from_path() instead to obtain an EsoFile object.
+    """
+    eso = read_from_path(eso_file_path)
+    return eso.dd, eso.data
+
+
+def read_from_path(eso_file_path):
+    """
+    read in a .eso file and return an EsoFile object that can be used
+    to read in pandas DataFrame and Series objects.
     """
     eso_file = open(eso_file_path, 'r')
-    parser = EsoParser(eso_file)
-    dd = parser.read_data_dictionary()
-    dd.build_index()
-    data = parser.read_data(dd)
-    return dd, data
+    eso = EsoFile(eso_file)
+    return eso
 
 
 class DataDictionary(object):
@@ -85,12 +101,39 @@ class DataDictionary(object):
                 if search.lower() in variable_name.lower()]
 
 
-class EsoParser(object):
+class EsoFile(object):
 
     def __init__(self, eso_file):
         self.eso_file = eso_file
+        self.dd = self._read_data_dictionary()
+        self.dd.build_index()
+        self.data = self._read_data()
 
-    def read_reporting_frequency(self, line):
+    def find_variable(self, search, key=None, frequency='TimeStep'):
+        """returns the coordinates (timestep, key, variable_name) in the
+        data dictionary that can be used to find an index. The search is case
+        insensitive and need only be specified partially."""
+        variables =  self.dd.find_variable(search)
+        variables = [v for v in variables
+                     if v[0].lower() == frequency.lower()]
+        if key:
+            variables = [v for v in variables
+                         if v[1].lower() == key.lower()]
+        return variables
+
+    def to_frame(self, search, key=None, frequency='TimeStep'):
+        """
+        creates a pandas DataFrame objects with a column for every variable
+        that matches the search pattern and key. An None key matches all keys.
+        NOTE: The frequency *has* to be the same for all variables selected.
+        (uses find_variable to select the variables)
+        """
+        from pandas import DataFrame
+        variables = self.find_variable(search, key=key, frequency=frequency)
+        data = {v[1]: self.data[self.dd.index[v]] for v in variables}
+        return DataFrame(data)
+
+    def _read_reporting_frequency(self, line):
         reporting_frequency = None
         if '! ' in line:
             line = line.split('! ')[0]
@@ -101,7 +144,7 @@ class EsoParser(object):
             reporting_frequency = reporting_frequency.split()[0]
         return line, reporting_frequency
 
-    def read_variable_unit(self, variable):
+    def _read_variable_unit(self, variable):
         unit = None
         if '[' in variable:
             variable, unit = variable.split('[')
@@ -109,7 +152,7 @@ class EsoParser(object):
             variable = variable.strip()
         return variable, unit
 
-    def read_data_dictionary(self):
+    def _read_data_dictionary(self):
         """parses the head of the eso_file, returning the data dictionary.
         the file object eso_file is advanced to the position needed by
         read_data.
@@ -119,7 +162,7 @@ class EsoParser(object):
         dd = DataDictionary(version, timestamp)
         line = self.eso_file.next().strip()
         while line != 'End of Data Dictionary':
-            line, reporting_frequency = self.read_reporting_frequency(line)
+            line, reporting_frequency = self._read_reporting_frequency(line)
             if reporting_frequency:
                 fields = [f.strip() for f in line.split(',')]
                 if len(fields) >= 4:
@@ -127,7 +170,7 @@ class EsoParser(object):
                 else:
                     id, nfields, variable = fields[:3]
                     key = None
-                variable, unit = self.read_variable_unit(variable)
+                variable, unit = self._read_variable_unit(variable)
                 dd.variables[int(id)] = [reporting_frequency, key,
                                          variable, unit]
             else:
@@ -137,19 +180,19 @@ class EsoParser(object):
         dd.ids = set(dd.variables.keys())
         return dd
 
-    def read_data(self, dd):
+    def _read_data(self):
         '''parse the data from the .eso file returning,
         NOTE: eso_file should be the same file object that was passed to
         read_data_dictionary(eso_file) to obtain dd.'''
         data = {}  # id => [value]
-        for id in dd.variables.keys():
+        for id in self.dd.variables.keys():
             data[id] = []
         for line in self.eso_file:
             if line.startswith('End of Data'):
                 break
             fields = [f.strip() for f in line.split(',')]
             id = int(fields[0])
-            if id not in dd.ids:
+            if id not in self.dd.ids:
                 # skip entries that are not output:variables
                 continue
             data[id].append(float(fields[1]))
