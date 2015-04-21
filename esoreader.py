@@ -110,7 +110,7 @@ def read_data_dictionary(eso_file):
     the file object eso_file is advanced to the position needed by
     read_data.
     """
-    version, timestamp = [s.strip() for s in eso_file.next().split(',')[1:]]
+    version, timestamp = [s.strip() for s in eso_file.next().split(',')[-2:]]
     dd = DataDictionary(version, timestamp)
     line = eso_file.next().strip()
     while line != 'End of Data Dictionary':
