@@ -113,7 +113,7 @@ class EsoFile(object):
         """returns the coordinates (timestep, key, variable_name) in the
         data dictionary that can be used to find an index. The search is case
         insensitive and need only be specified partially."""
-        variables =  self.dd.find_variable(search)
+        variables = self.dd.find_variable(search)
         variables = [v for v in variables
                      if v[0].lower() == frequency.lower()]
         if key:
@@ -121,7 +121,7 @@ class EsoFile(object):
                          if v[1].lower() == key.lower()]
         return variables
 
-    def to_frame(self, search, key=None, frequency='TimeStep'):
+    def to_frame(self, search, key=None, frequency='TimeStep', index=None):
         """
         creates a pandas DataFrame objects with a column for every variable
         that matches the search pattern and key. An None key matches all keys.
@@ -131,7 +131,10 @@ class EsoFile(object):
         from pandas import DataFrame
         variables = self.find_variable(search, key=key, frequency=frequency)
         data = {v[1]: self.data[self.dd.index[v]] for v in variables}
-        return DataFrame(data)
+        df = DataFrame(data)
+        if index is not None:
+            df.index = index
+        return df
 
     def _read_reporting_frequency(self, line):
         reporting_frequency = None
