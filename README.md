@@ -68,7 +68,7 @@ In [8]: df.plot()
 Out[8]: <matplotlib.axes._subplots.AxesSubplot at 0x7b66670>
 ```
 
-![Zone Ideal Loads Zone Total Heating Energy](ZoneIdealLoadsZoneTotalHeatingEnergy.png)
+![Zone Ideal Loads Zone Total Heating Energy](https://raw.githubusercontent.com/architecture-building-systems/esoreader/master/doc/ZoneIdealLoadsZoneTotalHeatingEnergy.png)
 
 Notice in the above example how the variable is matched by substring - you
 don't have to specify the whole variable name. Each matching variable will show
@@ -116,7 +116,7 @@ In [3]: df.plot()
 Out[3]: <matplotlib.axes._subplots.AxesSubplot at 0xbd11150>
 ```
 
-![Net Thermal Radiation Heat Gain Energy](NetThermalRadiationHeatGainEnergy.png)
+![Net Thermal Radiation Heat Gain Energy](https://raw.githubusercontent.com/architecture-building-systems/esoreader/master/doc/NetThermalRadiationHeatGainEnergy.png)
 
 ## The `key` parameter to `to_frame`
 
