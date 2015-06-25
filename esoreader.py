@@ -121,7 +121,7 @@ class EsoFile(object):
                          if v[1].lower() == key.lower()]
         return variables
 
-    def to_frame(self, search, key=None, frequency='TimeStep', index=None):
+    def to_frame(self, search, key=None, frequency='TimeStep', index=None, use_key_for_columns=True):
         """
         creates a pandas DataFrame objects with a column for every variable
         that matches the search pattern and key. An None key matches all keys.
@@ -130,7 +130,11 @@ class EsoFile(object):
         """
         from pandas import DataFrame
         variables = self.find_variable(search, key=key, frequency=frequency)
-        data = {v[1]: self.data[self.dd.index[v]] for v in variables}
+        if use_key_for_columns:
+            data = {v[1]: self.data[self.dd.index[v]] for v in variables}
+        else:
+            # use variable name as column name
+            data = {v[2]: self.data[self.dd.index[v]] for v in variables}
         df = DataFrame(data)
         if index is not None:
             df.index = index
