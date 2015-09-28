@@ -67,8 +67,8 @@ def read_from_path(eso_file_path):
     read in a .eso file and return an EsoFile object that can be used
     to read in pandas DataFrame and Series objects.
     """
-    eso_file = open(eso_file_path, 'r')
-    eso = EsoFile(eso_file)
+    with open(eso_file_path, 'r') as eso_file:
+        eso = EsoFile(eso_file)
     return eso
 
 
