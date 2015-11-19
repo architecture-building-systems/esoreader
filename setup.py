@@ -10,7 +10,7 @@ if os.path.exists('README.rst'):
 setup(
     name='esoreader',
     py_modules=['esoreader'],  # this must be the same as the name above
-    version='1.2.0',
+    version='1.2.1',
     description='A module for parsing EnergyPlus *.eso files',
     long_description=long_description,
     author='Daren Thomas',
