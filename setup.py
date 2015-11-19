@@ -16,7 +16,7 @@ setup(
     author='Daren Thomas',
     author_email='thomas@arch.ethz.ch',
     url='https://github.com/architecture-building-systems/esoreader',
-    download_url='https://github.com/architecture-building-systems/esoreader/tarball/1.1',  # noqa
+    download_url='https://github.com/architecture-building-systems/esoreader/archive/1.2.1.tar.gz',  # noqa
     keywords=['simulation', 'parsing', 'energyplus', 'pandas'],  # arbitrary keywords  # noqa
     classifiers=[],
 )
