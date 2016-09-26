@@ -165,9 +165,9 @@ class EsoFile(object):
         read_data.
         """
         version, timestamp = [s.strip() for s
-                              in self.eso_file.next().split(',')[-2:]]
+                              in self.eso_file.readline().split(',')[-2:]]
         dd = DataDictionary(version, timestamp)
-        line = self.eso_file.next().strip()
+        line = self.eso_file.readline().strip()
         while line != 'End of Data Dictionary':
             line, reporting_frequency = self._read_reporting_frequency(line)
             if reporting_frequency:
@@ -183,7 +183,7 @@ class EsoFile(object):
             else:
                 # ignore the lines that aren't report variables
                 pass
-            line = self.eso_file.next().strip()
+            line = self.eso_file.readline().strip()
         dd.ids = set(dd.variables.keys())
         return dd
 
