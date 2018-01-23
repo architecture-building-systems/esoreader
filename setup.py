@@ -10,13 +10,13 @@ if os.path.exists('README.rst'):
 setup(
     name='esoreader',
     py_modules=['esoreader'],  # this must be the same as the name above
-    version='1.2.2',
+    version='1.2.3',
     description='A module for parsing EnergyPlus *.eso files',
     long_description=long_description,
     author='Daren Thomas',
     author_email='thomas@arch.ethz.ch',
     url='https://github.com/architecture-building-systems/esoreader',
-    download_url='https://github.com/architecture-building-systems/esoreader/archive/1.2.1.tar.gz',  # noqa
+    download_url='https://github.com/architecture-building-systems/esoreader/archive/1.2.3.tar.gz',  # noqa
     keywords=['simulation', 'parsing', 'energyplus', 'pandas'],  # arbitrary keywords  # noqa
     classifiers=[],
 )
