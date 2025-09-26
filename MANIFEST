@@ -1,5 +1,4 @@
 esoreader.py
-setup.cfg
-setup.py
+pyproject.tml
 README.rst
 LICENSE.TXT

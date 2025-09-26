@@ -1,0 +1,31 @@
+[project]
+name = "esoreader"
+version = "1.2.3"
+description = "A module for parsing EnergyPlus *.eso files"
+readme = "README.md"
+license = { file = "LICENSE.txt" }
+authors = [
+    { name = "Daren Thomas", email = "thomas@arch.ethz.ch" }
+]
+keywords = ["simulation", "parsing", "energyplus", "pandas"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent"
+]
+dependencies = [
+    "pandas",
+    "pytest"
+]
+
+[project.urls]
+Homepage = "https://github.com/architecture-building-systems/esoreader"
+Repository = "https://github.com/architecture-building-systems/esoreader"
+Download = "https://github.com/architecture-building-systems/esoreader/archive/1.2.3.tar.gz"
+
+[tool.setuptools]
+py-modules = ["esoreader"]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
